@@ -30,7 +30,7 @@ LoginToken.onError = function(err) {
 ```
 
 ### Change expiration
-Set the token expiration by modifying `LoginToken.expiration`. It is in **milliseconds**. It default to one hour (60*60*1000).
+Set the token expiration by modifying `LoginToken.expiration`. It is in **milliseconds**. It default to one hour (60 * 60 * 1000).
 
 ## To-do list
 * Tests
