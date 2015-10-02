@@ -3,6 +3,8 @@ login-token
 
 Automatically log in a user if a valid, unexpired, single-use `authToken` is present in the URL.
 
+Use at your own risk. We use it for logging in via email and SMS notifications.
+
 ## Usage
 
 ### Add package
