@@ -10,7 +10,7 @@ Automatically log in a user if a valid, unexpired, single-use `authToken` is pre
 $ meteor add dispatch:login-token
 ```
 
-### Generate a token for a user
+### Generate a token for a user (server-only)
 ```js
 const token = LoginToken.generateTokenForUser(userId);
 ```
@@ -33,4 +33,5 @@ LoginToken.onError = function(err) {
 Set the token expiration by modifying `LoginToken.expiration`. It is in **milliseconds**. It default to one hour (60*60*1000).
 
 ## To-do list
-Tests
+* Tests
+* Change `onError =` to `onError(callback)`
