@@ -13,7 +13,6 @@ const hat = Npm.require('hat');
 
 // Login with just a token
 Accounts.registerLoginHandler(function(loginRequest) {
-  console.log(loginRequest);
   // Is there an auth token? If not, just let Meteor handle it
   if(!loginRequest || !loginRequest.authToken) {
     return;
@@ -35,7 +34,6 @@ Accounts.registerLoginHandler(function(loginRequest) {
 
   // Check expiration
   const now = Date.now();
-  console.log((new Date(doc.expiresAt)).toISOString(), (new Date(now)).toISOString());
   if(doc.expiresAt < now) {
     throw new Meteor.Error('Token has expired');
   }
@@ -66,7 +64,5 @@ LoginToken.createTokenForUser = function(userId) {
 
   return token;
 };
-
-console.log(LoginToken.createTokenForUser(9));
 
 
