@@ -20,20 +20,19 @@ const token = LoginToken.generateTokenForUser(userId);
 ### Log in...
 Go to `http://myapp.mydomain.com/some/route?authToken=<token>`
 
-### Handle errors
-If you want to display errors on the client if the login attempt via `authToken` fails, just set `LoginToken.onError` to a function that accepts the error.
+### Events/callbacks
+The `LoginToken` object emits events both on the client and server. To listen to events, just use `LoginToken.on('<event name>', callback);`
 
-For example:
+The events are:
 
-```js
-LoginToken.onError = function(err) {
-  alert('Oops!');
-};
+* `errorServer`
+* `errorClient`
+* `loggedInServer`
+* `loggedInClient`
+
+The "error" callbacks receive the error as the only argument, and the `"loggedIn" callbacks receive the `userId` as the only argument.
 ```
 
 ### Change expiration
-Set the token expiration by modifying `LoginToken.expiration`. It is in **milliseconds**. It default to one hour (60 * 60 * 1000).
+Set the token expiration by running `LoginToken.setExpiration(val)`. It is in **milliseconds**. It default to one hour (60 * 60 * 1000).
 
-## To-do list
-* Tests
-* Change `onError =` to `onError(callback)`

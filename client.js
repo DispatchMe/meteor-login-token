@@ -28,40 +28,42 @@ function getParams(str) {
 }
 
 
-LoginToken.checkToken = function() {
-  const params = getParams(window.location.search);
 
-  if(params.authToken) {
-    const userId = Tracker.nonreactive(Meteor.userId);
+LoginToken.checkToken = function(token, params) {
+  const userId = Tracker.nonreactive(Meteor.userId);
 
-    if(!userId) {
-      Accounts.callLoginMethod({
-        methodArguments: [{authToken: params.authToken}],
-        userCallback:function(err) {
-          if(err) {
-            if(typeof LoginToken.onError === 'function') {
-              LoginToken.onError(err);
-            }
-          } else {
-            delete(params.authToken);
-            var queryString = [];
+  if(!userId) {
+    Accounts.callLoginMethod({
+      methodArguments: [{authToken: token}],
+      userCallback:function(err) {
+        if(err) {
+          LoginToken.emit('errorClient', err);
+        } else {
+          LoginToken.emit('loggedInClient');
+          delete(params.authToken);
+          var queryString = [];
 
-            for(var k in params) {
-              if(params.hasOwnProperty(k)) {
-                queryString.push(k + '=' + encodeURIComponent(params[k]));
-              }
-            }
-
-            // Make it look clean by removing the authToken from the URL
-            if(window.history) {
-              window.history.pushState(null, null, window.location.href.split('?')[0] + queryString.join('&'));
+          for(var k in params) {
+            if(params.hasOwnProperty(k)) {
+              queryString.push(k + '=' + encodeURIComponent(params[k]));
             }
           }
-          
+
+          // Make it look clean by removing the authToken from the URL
+          if(window.history) {
+            window.history.pushState(null, null, window.location.href.split('?')[0] + queryString.join('&'));
+          }
         }
-      });
-    }
+        
+      }
+    });
   }
 };
 
-Meteor.startup(LoginToken.checkToken);
+Meteor.startup(function() {
+  const params = getParams(window.location.search);
+
+  if(params.authToken) {
+    LoginToken.checkToken(params.authToken, params)
+  };
+});

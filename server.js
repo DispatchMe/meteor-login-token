@@ -5,10 +5,19 @@ Meteor.startup(function () {
 });
 
 // Default expiration is 1 hour
+let expiration = 60*60*1000;
+
+LoginToken.setExpiration = function(exp) {
+  expiration = exp;
+}
+
+
 LoginToken.expiration = 60*60 * 1000;
 
 // Hat can generate unique tokens
 const hat = Npm.require('hat');
+
+
 
 
 // Login with just a token
@@ -17,6 +26,7 @@ Accounts.registerLoginHandler(function(loginRequest) {
   if(!loginRequest || !loginRequest.authToken) {
     return;
   }
+
 
   // Find the matching user from the code
   const doc = LoginToken.TokenCollection.findOne({
@@ -47,9 +57,13 @@ Accounts.registerLoginHandler(function(loginRequest) {
     
   });
 
+  const userId = doc.userId.toString();
+
+  // Emit events for any listeners
+  LoginToken.emit('loggedInServer', userId);
 
   return {
-    userId:doc.userId.toString()
+    userId:userId
   };
   
 });

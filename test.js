@@ -1,41 +1,70 @@
+if(Meteor.isServer) {
+  Meteor.methods({
+    getLoginToken:function(userId) {
+      if(userId) {
+        return LoginToken.createTokenForUser(userId);
+      }
+      return null;
+      
+    },
+    // To bypass auth
+    createUser:function(data = {}) {
+      Meteor.users.remove({});
+      return Meteor.users.insert(data);
+    }
+  });
+}
 
-// if (Meteor.isServer) {
+if(Meteor.isClient) {
+  describe('login token', () => {
+    beforeEach(function(done) {
+      Meteor.call('createUser', {}, (err, userId) => {
+        if(err) done(err);
+        else {
+          this.userId = userId;
+          done();
+        }
+        
+      });
+    });
 
-//   // Hardcode an authenticated userId
-//   Meteor.users.upsert({
-//     _id: '1'
-//   }, {});
+    it('should log you in with a valid token', function(done) {
+      Meteor.call('getLoginToken', this.userId, (err, res) => {
+        if(err) return done(err);
+        
+        // Wait for it...
+        LoginToken.on('loggedInClient', () => {
+          const user = Meteor.user();
+          expect(user._id).toEqual(this.userId);
+          done();
+        });
 
-  
+        LoginToken.on('errorClient', (err) => {
+          done(err);
+        });
+        LoginToken.checkToken(res, {});
+        
+        
+      });
+    });
 
-//   // Setup an sso route
-//   SSO.route('/test');
+    it('should not log you in with an invalid token', function(done) {
+      Meteor.call('getLoginToken', this.userId, (err, res) => {
+        if(err) return done(err);
+        if(!res) return done(new Error('No token?'));
+        
+        // Wait for it...
+        LoginToken.on('loggedInClient', () => {
+          done(new Error('Should not have worked'));
+        });
 
-// }
-
-// if (Meteor.isClient) {
-
-//   describe('SSO', function () {
-//     it('add a login token when the user is authenticated', function () {
-//       // HTTP.get(Meteor.absoluteUrl('/test'), function (error, response) {
-//       //   done();
-//       //   debugger;
-//       // });
-//     });
-//   });
-
-// }
-
-// if (Meteor.isServer) {
-//   describe('SSO', () => {
-//     it('should validate bearer token', () => {
-//       Meteor.settings = {
-//         dispatchApi: {
-//           url: 'https://api-dev.dispatch.me'
-//         }
-//       };
-//       SSO.validateBearerToken('b229c2425902245b3167d69a1f846e0f3dd3a2b590d9498129edeb10297fdae11');
-//     });
-//   });
-
-// }
+        LoginToken.on('errorClient', (err) => {
+          done();
+        });
+        LoginToken.checkToken(res + '5', {});
+        
+        
+      });
+    });
+  });
+}

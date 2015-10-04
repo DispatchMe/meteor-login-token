@@ -1,6 +1,6 @@
 Package.describe({
   name: 'dispatch:login-token',
-  version: '0.0.1',
+  version: '0.0.2',
   summary: 'Log the user in if they have the correct single-use token in the URL',
   git: 'https://github.com/DispatchMe/meteor-login-token'
 });
@@ -13,12 +13,14 @@ Package.onUse(function (api) {
   api.versionsFrom('1.2');
 
   api.use([
+    'tracker',
     'check',
     'accounts-base',
     'ecmascript',
     'mongo',
     'ecmascript',
     'http',
+    'raix:eventemitter@0.1.3'
   ], ['client', 'server']);
 
 
@@ -29,17 +31,16 @@ Package.onUse(function (api) {
   api.export('LoginToken', ['client', 'server']);
 });
 
-// Package.onTest(function (api) {
-//   api.use('sanjo:jasmine@0.20.0');
+Package.onTest(function (api) {
+  api.use('sanjo:jasmine@0.20.1');
 
-//   api.use('http', 'client');
+  api.use('http', 'client');
 
-//   api.use([
-//     'accounts-base',
-//     'simple:json-routes@1.0.3',
-//     'simple:sso',
-//     'ecmascript'
-//   ], 'server');
+  api.use([
+    'accounts-base',
+    'dispatch:login-token',
+    'ecmascript'
+  ], ['client', 'server']);
 
-//   api.addFiles('sso.test.js');
-// });
+  api.addFiles('test.js');
+});
