@@ -49,7 +49,7 @@ if (Meteor.isClient) {
   // Until we can figure out how to catch it client-side I'm going to comment out this test
   // it('should not log you in with an invalid token', function(done) {
   //   Meteor.call('getLoginToken', this.userId, (err, res) => {
-  //     if (err) return done(err);
+  //     if (err) return done.fail(err);
   //     if (!res) return done(new Error('No token?'));
   //
   //     // Wait for it...
@@ -57,11 +57,13 @@ if (Meteor.isClient) {
   //       done.fail(new Error('Should not have worked'));
   //     });
   //
-  //     LoginToken.on('errorClient', () => {
-  //       done(null);
+  //     LoginToken.on('errorClient', (err) => {
+  //       console.log('Got error:', err);
+  //     // done(null);
   //     });
   //     LoginToken.checkToken(res + '5', {});
   //   });
+  //
   // });
   });
 }
