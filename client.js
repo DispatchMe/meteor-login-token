@@ -1,32 +1,33 @@
 /* global LoginToken:true */
+
+/**
+ * Parse a query string into a key/value object
+ * @param  {String} queryString String to parse
+ * @return {Object}             Key/value object
+ */
+var parseQueryString = function(queryString) {
+  return _.object(_.map(queryString
+            .split('&'), function(keyval) {
+              return _.map(keyval.split('='), (val) => decodeURIComponent(val));
+            }));
+};
+
+/**
+ * Converts an object into a querystring
+ * @param  {Object} obj) Source
+ * @return {String}      Query string
+ */
+var objectToQueryString = (obj) => _.map(obj, (val, key) => `${key}=${val}`).join('&');
+
 function getParams(str) {
   let queryString = str || window.location.search || '';
-  let keyValPairs = [];
-
-  let params = {};
-
-  // There are no parameters on the route.
-  if (queryString.indexOf('?') === -1) return params;
 
   queryString = queryString.substring(queryString.indexOf('?') + 1);
 
-  if (queryString.length) {
-    keyValPairs = queryString.split('&');
-
-    for (let pairNum in keyValPairs) {
-      if (keyValPairs.hasOwnProperty(pairNum)) {
-        let key = keyValPairs[pairNum].split('=')[0];
-        if (!key.length) continue;
-        if (typeof params[key] === 'undefined') {
-          params[key] = keyValPairs[pairNum].split('=')[1];
-        }
-      }
-    }
-  }
-  return params;
+  return parseQueryString(queryString);
 }
 
-LoginToken.checkToken = function(token, params) {
+LoginToken.checkToken = function(token, params, argName = 'authToken') {
   if (!token) {
     return;
   }
@@ -42,19 +43,15 @@ LoginToken.checkToken = function(token, params) {
           LoginToken.emit('errorClient', err);
         } else {
           LoginToken.emit('loggedInClient');
-          delete params.authToken;
-          let queryString = [];
 
-          for (let k in params) {
-            if (params.hasOwnProperty(k)) {
-              queryString.push(k + '=' + encodeURIComponent(params[k]));
+          if (params) {
+            delete params[argName];
+
+            // Make it look clean by removing the authToken from the URL
+            if (window.history) {
+              window.history.pushState(null, null,
+                window.location.href.split('?')[0] + objectToQueryString(params));
             }
-          }
-
-          // Make it look clean by removing the authToken from the URL
-          if (window.history) {
-            window.history.pushState(null, null,
-              window.location.href.split('?')[0] + queryString.join('&'));
           }
         }
       },
@@ -62,10 +59,17 @@ LoginToken.checkToken = function(token, params) {
   }
 };
 
-Meteor.startup(function() {
-  const params = getParams(window.location.search);
+/**
+ * Parse querystring for token argument, if found use it to auto-login the
+ * user
+ * @param  {String} name Name of argument (default "authToken")
+ */
+LoginToken.autologin = function(name = 'authToken') {
+  Meteor.startup(function() {
+    const params = getParams(window.location.search);
 
-  if (params.authToken) {
-    LoginToken.checkToken(params.authToken, params);
-  }
-});
+    if (params[name]) {
+      LoginToken.checkToken(params[name], params);
+    }
+  });
+};

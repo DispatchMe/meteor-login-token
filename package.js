@@ -1,6 +1,6 @@
 Package.describe({
   name: 'dispatch:login-token',
-  version: '0.0.3',
+  version: '0.0.4',
   summary: 'Log the user in if they have the correct single-use token ' +
     'in the URL',
   git: 'https://github.com/DispatchMe/meteor-login-token',
@@ -19,7 +19,7 @@ Package.onUse(function(api) {
     'accounts-base',
     'ecmascript',
     'mongo',
-    'ecmascript',
+    'underscore',
     'http',
     'raix:eventemitter@0.1.3',
   ], ['client', 'server']);

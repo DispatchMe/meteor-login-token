@@ -24,7 +24,7 @@
   },
   "rules": {
     "strict": [2, "never"],
-    "no-var": 2,
+    "no-var": 0,
     "no-shadow": 2,
     "no-shadow-restricted-names": 2,
     "no-unused-vars": [2, {
@@ -112,7 +112,7 @@
     "comma-style": [2, "last"],
     "eol-last": 2,
     "func-names": 0,
-    "func-style": [2, "declaration"],
+    "func-style": [0, "declaration"],
     "key-spacing": [2, {
         "beforeColon": false,
         "afterColon": true
