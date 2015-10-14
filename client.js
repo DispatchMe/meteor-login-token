@@ -33,7 +33,9 @@ LoginToken.checkToken = function(token, params, argName = 'authToken') {
   }
   const userId = Tracker.nonreactive(Meteor.userId);
 
-  if (!userId) {
+  if (userId) {
+    LoginToken.emit('loggedInClient');
+  } else {
     Accounts.callLoginMethod({
       methodArguments: [{
         dispatch_authToken: token,
