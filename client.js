@@ -72,6 +72,8 @@ LoginToken.autologin = function(name = 'authToken') {
 
     if (params[name]) {
       LoginToken.checkToken(params[name], params);
+    } else {
+      LoginToken.emit('noToken');
     }
   });
 };
