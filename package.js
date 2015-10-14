@@ -1,6 +1,6 @@
 Package.describe({
   name: 'dispatch:login-token',
-  version: '0.0.4',
+  version: '0.0.5',
   summary: 'Log the user in if they have the correct single-use token ' +
     'in the URL',
   git: 'https://github.com/DispatchMe/meteor-login-token',
