@@ -1,6 +1,6 @@
 LoginToken.TokenCollection = new Mongo.Collection('LoginToken_tokens');
 
-Meteor.startup(function() {
+Meteor.startup(function () {
   LoginToken.TokenCollection._ensureIndex({
     token: 1,
   });
@@ -9,7 +9,7 @@ Meteor.startup(function() {
 // Default expiration is 1 hour
 let expiration = 60 * 60 * 1000;
 
-LoginToken.setExpiration = function(exp) {
+LoginToken.setExpiration = function (exp) {
   expiration = exp;
 };
 
@@ -17,7 +17,7 @@ LoginToken.setExpiration = function(exp) {
 const hat = Npm.require('hat');
 
 // Login with just a token
-Accounts.registerLoginHandler(function(loginRequest) {
+Accounts.registerLoginHandler(function (loginRequest) {
   // Is there an auth token? If not, just let Meteor handle it. Call it dispatch_authToken in case there's another
   // library that uses authToken
   if (!loginRequest || !loginRequest.dispatch_authToken) {
@@ -62,7 +62,7 @@ Accounts.registerLoginHandler(function(loginRequest) {
   };
 });
 
-LoginToken.createTokenForUser = function(userId) {
+LoginToken.createTokenForUser = function (userId) {
   const token = hat(256);
   LoginToken.TokenCollection.insert({
     userId: userId,

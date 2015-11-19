@@ -6,10 +6,10 @@
  * @param  {String} queryString String to parse
  * @return {Object}             Key/value object
  */
-var parseQueryString = function(queryString) {
+var parseQueryString = function (queryString) {
   return _.object(_.map(queryString
     .split('&'),
-    function(keyval) {
+    function (keyval) {
       return _.map(keyval.split('='), (val) => decodeURIComponent(val));
     }));
 };
@@ -29,7 +29,7 @@ function getParams(str) {
   return parseQueryString(queryString);
 }
 
-LoginToken.checkToken = function(token, params, argName = 'authToken') {
+LoginToken.checkToken = function (token, params, argName = 'authToken') {
   if (!token) {
     return;
   }
@@ -43,7 +43,7 @@ LoginToken.checkToken = function(token, params, argName = 'authToken') {
   } else {
     Accounts.callLoginMethod({
       methodArguments: [methodArgument],
-      userCallback: function(err) {
+      userCallback: function (err) {
         if (err) {
           LoginToken.emit('errorClient', err);
         } else {
@@ -69,12 +69,12 @@ LoginToken.checkToken = function(token, params, argName = 'authToken') {
  * user
  * @param  {String} name Name of argument (default "authToken")
  */
-LoginToken.autologin = function(name = 'authToken') {
-  Meteor.startup(function() {
+LoginToken.autologin = function (name = 'authToken') {
+  Meteor.startup(function () {
     const params = getParams(window.location.search);
 
     if (params[name]) {
-      LoginToken.checkToken(params[name], params);
+      LoginToken.checkToken(params[name], params, name);
     } else {
       LoginToken.emit('noToken');
     }
