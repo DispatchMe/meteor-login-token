@@ -1,3 +1,4 @@
+/* jshint esnext:true */
 /* global LoginToken:true */
 
 /**
@@ -7,9 +8,10 @@
  */
 var parseQueryString = function(queryString) {
   return _.object(_.map(queryString
-            .split('&'), function(keyval) {
-              return _.map(keyval.split('='), (val) => decodeURIComponent(val));
-            }));
+    .split('&'),
+    function(keyval) {
+      return _.map(keyval.split('='), (val) => decodeURIComponent(val));
+    }));
 };
 
 /**
@@ -33,13 +35,14 @@ LoginToken.checkToken = function(token, params, argName = 'authToken') {
   }
   const userId = Tracker.nonreactive(Meteor.userId);
 
+  let methodArgument = {};
+
+  methodArgument[`dispatch_${argName}`] = token;
   if (userId) {
     LoginToken.emit('loggedInClient');
   } else {
     Accounts.callLoginMethod({
-      methodArguments: [{
-        dispatch_authToken: token,
-      }],
+      methodArguments: [methodArgument],
       userCallback: function(err) {
         if (err) {
           LoginToken.emit('errorClient', err);
