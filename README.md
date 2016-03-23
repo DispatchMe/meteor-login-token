@@ -14,7 +14,7 @@ $ meteor add dispatch:login-token
 
 ### Generate a token for a user (server-only)
 ```js
-const token = LoginToken.generateTokenForUser(userId);
+const token = LoginToken.createTokenForUser(userId);
 ```
 
 ### Log in...
