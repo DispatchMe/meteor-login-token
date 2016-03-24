@@ -54,8 +54,9 @@ LoginToken.checkToken = function (token, params, argName = 'authToken') {
 
             // Make it look clean by removing the authToken from the URL
             if (window.history) {
-              window.history.pushState(null, null,
-                window.location.href.split('?')[0] + objectToQueryString(params));
+              const url =`${window.location.href.split('?')[0]}?${objectToQueryString(params)}`;
+
+              window.history.pushState(null, null, url);
             }
           }
         }
