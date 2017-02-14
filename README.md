@@ -25,16 +25,16 @@ const token = LoginToken.createTokenForUser(userId, [options]);
 
 `option` variable allows `removeOnUse` and `removeUserTokens` to be defined.
  - `removeOnUse`: will remove the token from the database once logged in.
- - `removeUserTokens`: will remove all other user tokens in the database before issuing a new token.
+ - `removeUserTokens`: will remove all other tokens for `userId` in the database before issuing a new token.
 
 ### Remove tokens from the database (server-only)
 
 ```js
 
 const options = {
-  allTokens: Match.optional(Boolean),
-  usedTokens: Match.optional(Boolean),
-  expiredTokens: Match.optional(Boolean)
+  allTokens: false,
+  usedTokens: false,
+  expiredTokens: false
 }
 
 LoginToken.removeTokens(options)
@@ -48,16 +48,17 @@ All options default to false, `allTokens` overrides other options.
 ```js
 
 const options = {
-  allTokens: Match.optional(Boolean),
-  usedTokens: Match.optional(Boolean),
-  expiredTokens: Match.optional(Boolean)
+  allTokens: false,
+  usedTokens: false,
+  expiredTokens: false
 }
 
-LoginToken.removeTokens(userId, options)
+LoginToken.removeUserTokens(userId, options)
 
 ```
 
-All options default to false, `allTokens` overrides other options.
+All options default to false, `allTokens` overrides other options. Same as `removeTokens`, specific
+to a single user.
 
 ### Log in...
 Go to `http://myapp.mydomain.com/some/route?authToken=<token>`
