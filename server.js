@@ -81,7 +81,7 @@ LoginToken.createTokenForUser = function (userId, options = {}) {
     userId: userId,
     expiresAt: new Date(Date.now() + expiration),
     token: token,
-    removeOnUse: !!removeOnUse,
+    removeOnUse: !!options.removeOnUse,
   });
 
   return token;
