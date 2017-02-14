@@ -69,8 +69,8 @@ Accounts.registerLoginHandler(function (loginRequest) {
 LoginToken.createTokenForUser = function (userId, options = {}) {
 
   check(options, {
-    removeUserTokens: Match.optional(Boolean),
-    removeOnUse: Match.optional(Boolean)
+    removeUserTokens: Match.Optional(Boolean),
+    removeOnUse: Match.Optional(Boolean)
   })
 
   // aaronthorp: remove any old login tokens for user, active, expired or used
@@ -95,13 +95,13 @@ LoginToken.createTokenForUser = function (userId, options = {}) {
 LoginToken.removeTokens = function (options = {}) {
 
   check(options, {
-    allTokens: Match.optional(Boolean),
-    usedTokens: Match.optional(Boolean),
-    expiredTokens: Match.optional(Boolean),
+    allTokens: Match.Optional(Boolean),
+    usedTokens: Match.Optional(Boolean),
+    expiredTokens: Match.Optional(Boolean),
   })
 
   if (options.allTokens) {
-    LoginToken.TokenCollection.remove()
+    LoginToken.TokenCollection.remove({})
     return
   }
 
@@ -119,9 +119,9 @@ LoginToken.removeTokens = function (options = {}) {
 LoginToken.removeUserTokens = function(userId, options) {
 
   check(options, {
-    allTokens: Match.optional(Boolean),
-    usedTokens: Match.optional(Boolean),
-    expiredTokens: Match.optional(Boolean),
+    allTokens: Match.Optional(Boolean),
+    usedTokens: Match.Optional(Boolean),
+    expiredTokens: Match.Optional(Boolean),
   })
 
   if (options.allTokens) {

@@ -25,7 +25,7 @@ const token = LoginToken.createTokenForUser(userId, [options]);
 
 `option` variable allows `removeOnUse` and `removeUserTokens` to be defined.
  - `removeOnUse`: will remove the token from the database once logged in.
- - `removeUserTokens`, will remove all other user tokens in the database before issuing a new token.
+ - `removeUserTokens`: will remove all other user tokens in the database before issuing a new token.
 
 ### Remove tokens from the database (server-only)
 
