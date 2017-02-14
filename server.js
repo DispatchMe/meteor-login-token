@@ -72,7 +72,7 @@ LoginToken.createTokenForUser = function (userId, options = {}) {
     removeOnUse: Match.Optional(Boolean)
   })
 
-  if (removeUserTokens) {
+  if (options.removeUserTokens) {
     LoginToken.removeUserTokens(userId, {allTokens: true})
   }
 
