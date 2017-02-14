@@ -43,7 +43,6 @@ Accounts.registerLoginHandler(function (loginRequest) {
     throw new Meteor.Error('Token has expired');
   }
 
-  // aaronthorp: remove once token is used if flag set
   if (doc.removeOnUse) {
     // remove the token
     LoginToken.TokenCollection.remove(doc._id)
@@ -73,8 +72,6 @@ LoginToken.createTokenForUser = function (userId, options = {}) {
     removeOnUse: Match.Optional(Boolean)
   })
 
-  // aaronthorp: remove any old login tokens for user, active, expired or used
-  //             before generating a new token.
   if (removeUserTokens) {
     LoginToken.removeUserTokens(userId, {allTokens: true})
   }
@@ -84,14 +81,12 @@ LoginToken.createTokenForUser = function (userId, options = {}) {
     userId: userId,
     expiresAt: new Date(Date.now() + expiration),
     token: token,
-    // aaronthorp: flag the token to be removed on use if set in options
     removeOnUse: !!removeOnUse,
   });
 
   return token;
 };
 
-// aaronthorp: remove old login tokens for user, also remove used tokens if true
 LoginToken.removeTokens = function (options = {}) {
 
   check(options, {
