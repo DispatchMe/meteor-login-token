@@ -14,8 +14,50 @@ $ meteor add dispatch:login-token
 
 ### Generate a token for a user (server-only)
 ```js
-const token = LoginToken.createTokenForUser(userId);
+
+const options = {
+  removeOnUse: false,
+  removeUserTokens: false
+}
+
+const token = LoginToken.createTokenForUser(userId, [options]);
 ```
+
+`option` variable allows `removeOnUse` and `removeUserTokens` to be defined.
+ - `removeOnUse`: will remove the token from the database once logged in.
+ - `removeUserTokens`, will remove all other user tokens in the database before issuing a new token.
+
+### Remove tokens from the database (server-only)
+
+```js
+
+const options = {
+  allTokens: Match.optional(Boolean),
+  usedTokens: Match.optional(Boolean),
+  expiredTokens: Match.optional(Boolean)
+}
+
+LoginToken.removeTokens(options)
+
+```
+
+All options default to false, `allTokens` overrides other options.
+
+### Remove user specific tokens from the database (server-only)
+
+```js
+
+const options = {
+  allTokens: Match.optional(Boolean),
+  usedTokens: Match.optional(Boolean),
+  expiredTokens: Match.optional(Boolean)
+}
+
+LoginToken.removeTokens(userId, options)
+
+```
+
+All options default to false, `allTokens` overrides other options.
 
 ### Log in...
 Go to `http://myapp.mydomain.com/some/route?authToken=<token>`
@@ -35,4 +77,3 @@ The "error" callbacks receive the error as the only argument, and the `"loggedIn
 
 ### Change expiration
 Set the token expiration by running `LoginToken.setExpiration(val)`. It is in **milliseconds**. It default to one hour (60 * 60 * 1000).
-
