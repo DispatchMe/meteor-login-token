@@ -1,6 +1,6 @@
 LoginToken.TokenCollection = new Mongo.Collection('LoginToken_tokens');
 
-Meteor.startup(function () {
+Meteor.startup(function() {
   LoginToken.TokenCollection._ensureIndex({
     token: 1,
   });
@@ -8,16 +8,21 @@ Meteor.startup(function () {
 
 // Default expiration is 1 hour
 let expiration = 60 * 60 * 1000;
+let maxNumberOfUses = 1;
 
-LoginToken.setExpiration = function (exp) {
+LoginToken.setExpiration = function(exp) {
   expiration = exp;
+};
+
+LoginToken.setMaxNumberOfUses = function(number) {
+  maxNumberOfUses = number;
 };
 
 // Hat can generate unique tokens
 const hat = Npm.require('hat');
 
 // Login with just a token
-Accounts.registerLoginHandler(function (loginRequest) {
+Accounts.registerLoginHandler(function(loginRequest) {
   // Is there an auth token? If not, just let Meteor handle it. Call it dispatch_authToken in case there's another
   // library that uses authToken
   if (!loginRequest || !loginRequest.dispatch_authToken) {
@@ -44,13 +49,15 @@ Accounts.registerLoginHandler(function (loginRequest) {
   }
 
   // Update it to used
-  LoginToken.TokenCollection.update(doc._id, {
-    $set: {
-      used: true,
-      usedAt: new Date(),
-    },
+  if (doc.maxNumberOfUses === doc.numberOfUses) {
+    LoginToken.TokenCollection.update(doc._id, {
+      $set: {
+        used: true,
+        usedAt: new Date(),
+      },
+    });
+  }
 
-  });
 
   const userId = doc.userId.toString();
 
@@ -58,16 +65,18 @@ Accounts.registerLoginHandler(function (loginRequest) {
   LoginToken.emit('loggedInServer', userId);
 
   return {
-    userId: userId,
+    userId,
   };
 });
 
-LoginToken.createTokenForUser = function (userId) {
+LoginToken.createTokenForUser = function(userId) {
   const token = hat(256);
   LoginToken.TokenCollection.insert({
-    userId: userId,
+    userId,
     expiresAt: new Date(Date.now() + expiration),
-    token: token,
+    token,
+    maxNumberOfUses,
+    numberOfUses: 0,
   });
 
   return token;
