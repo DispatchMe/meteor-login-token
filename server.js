@@ -64,7 +64,12 @@ Accounts.registerLoginHandler(function(loginRequest) {
   const userId = doc.userId.toString();
 
   // Emit events for any listeners
-  LoginToken.emit('loggedInServer', userId);
+  try {
+    LoginToken.emit('loggedInServer', userId);
+  } catch (e) {
+    console.error('Error in loggedInServer event', e);
+  }
+
 
   return {
     userId,
@@ -76,6 +81,7 @@ LoginToken.createTokenForUser = function(userId) {
   const token = hat(256);
   LoginToken.TokenCollection.insert({
     userId,
+    used: false,
     expiresAt: new Date(Date.now() + expiration),
     token,
     maxNumberOfUses,
