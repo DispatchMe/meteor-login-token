@@ -56,6 +56,8 @@ Accounts.registerLoginHandler(function(loginRequest) {
         usedAt: new Date(),
       },
     });
+  } else {
+    LoginToken.TokenCollection.update(doc._id, { $inc: { numberOfUses: 1 } });
   }
 
 
