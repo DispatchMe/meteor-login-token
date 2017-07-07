@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "hat": {
-      "version": "0.0.3"
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/hat/-/hat-0.0.3.tgz",
+      "from": "hat@0.0.3"
     }
   }
 }
