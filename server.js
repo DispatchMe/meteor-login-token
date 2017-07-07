@@ -72,6 +72,7 @@ Accounts.registerLoginHandler(function(loginRequest) {
 });
 
 LoginToken.createTokenForUser = function(userId) {
+  if (!userId) throw new Meteor.Error('No userId supplied to LoginToken.createTokenForUser(userId)');
   const token = hat(256);
   LoginToken.TokenCollection.insert({
     userId,
